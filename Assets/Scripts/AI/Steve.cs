@@ -7,6 +7,7 @@ public class Steve : MonoBehaviour
 {
     public SteveStats steveStats;
 
+    [Header("Stats Settings")]
     public float hungerDecayAmount;
     public float thirstDecayAmount;
     public float hungerDecayRate;
@@ -16,8 +17,8 @@ public class Steve : MonoBehaviour
     private float hunger;
     private float thirst;
 
-    public float currentHunger;
-    public float currentThirst;
+    private float currentHunger;
+    private float currentThirst;
 
     private void Awake()
     {

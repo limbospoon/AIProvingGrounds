@@ -35,8 +35,32 @@ public class SteveAI : MonoBehaviour
             currentWaypoint = 0;
     }
 
+    IEnumerator Wander()
+    {
+        while(true)
+        {
+            bool reachedGoal = false;
+            Vector2 randomGoal = Random.insideUnitCircle * 5;
+            goal.position = new Vector3(randomGoal.x, goal.position.y, randomGoal.y);
+            Vector3 targetDir = goal.position - transform.position;
+            while(!reachedGoal)
+            {
+                transform.Translate(targetDir.normalized * moveSpeed);
+                if (Vector3.Distance(transform.position, goal.position) <= targetDistance)
+                    reachedGoal = true;
+                yield return new WaitForSeconds(0.01f);
+            }
+            yield return null;
+        }
+    }
+
+    private void Start()
+    {
+        StartCoroutine(Wander());
+    }
+
     private void LateUpdate()
     {
-        Patrol();
+        //Patrol();
     }
 }
