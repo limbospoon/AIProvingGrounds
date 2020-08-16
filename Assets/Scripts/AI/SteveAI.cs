@@ -25,10 +25,14 @@ public class SteveAI : MonoBehaviour
         if (Vector3.Distance(transform.position, goal.position) > targetDistance)
             transform.Translate(targetDir.normalized * moveSpeed);
         else
-            if(currentWaypoint <= patrolPoints.Length)
+        {
+            if (currentWaypoint < patrolPoints.Length)
+            {
                 currentWaypoint++;
-            else
-                currentWaypoint = 0;
+            }
+        }
+        if (currentWaypoint >= patrolPoints.Length)
+            currentWaypoint = 0;
     }
 
     private void LateUpdate()
