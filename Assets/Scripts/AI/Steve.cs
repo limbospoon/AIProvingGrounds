@@ -20,6 +20,8 @@ public class Steve : MonoBehaviour
     private float currentHunger;
     private float currentThirst;
     private SteveAI steveAI;
+    private bool turnOnAI = false;
+
 
     private void Awake()
     {
@@ -40,7 +42,11 @@ public class Steve : MonoBehaviour
 
     private void Update()
     {
-        steveAI.UpdateAI();
+        if (Input.GetKeyDown(KeyCode.T))
+            turnOnAI = !turnOnAI;
+
+        if (turnOnAI)
+            steveAI.UpdateAI();
     }
 
     IEnumerator UpdateStat(float stat, float decay, float rate, Action<float> callback)

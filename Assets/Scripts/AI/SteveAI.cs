@@ -13,9 +13,10 @@ public class SteveAI : MonoBehaviour
 
     private void Move()
     {
-        Vector3 targetDir = goal.position - transform.position;
         if(Vector3.Distance(transform.position, goal.position) > targetDistance)
-            transform.Translate(targetDir.normalized * moveSpeed);
+        {
+            transform.Translate(transform.forward * moveSpeed, Space.World);
+        }
     }
 
     void Patrol()
@@ -73,14 +74,12 @@ public class SteveAI : MonoBehaviour
         Debug.Log(Vector3.Angle(transform.position, goal.position));
 
         int clockWise = 1;
-        if(Cross(fwd, targetDir).z < 0)
+        if(Cross(fwd, targetDir).y < 0)
         {
             clockWise = -1;
         }
 
-        float unityAngle = Vector3.SignedAngle(fwd, targetDir, transform.up);
-
-        this.transform.Rotate(0, unityAngle, 0);
+        transform.Rotate(0, (angle * Mathf.Rad2Deg * clockWise) * 0.25f, 0);
     }
 
     Vector3 Cross(Vector3 v, Vector3 w)
@@ -92,9 +91,15 @@ public class SteveAI : MonoBehaviour
         return new Vector3(xMult, yMult, zMult);
     }
 
-    public void UpdateAI()
+    void TravelToGoal()
     {
         CalculateAngle();
+        Move();
+    }
+
+    public void UpdateAI()
+    {
+        TravelToGoal();
         //Patrol();
     }
 }
