@@ -19,6 +19,7 @@ public class Steve : MonoBehaviour
 
     private float currentHunger;
     private float currentThirst;
+    private SteveAI steveAI;
 
     private void Awake()
     {
@@ -28,12 +29,18 @@ public class Steve : MonoBehaviour
 
         currentHunger = hunger;
         currentThirst = thirst;
+        steveAI = GetComponent<SteveAI>();
     }
 
     private void Start()
     {
         StartCoroutine(UpdateStat(currentHunger, hungerDecayAmount, hungerDecayRate, (i) => { currentHunger = i; }));
         StartCoroutine(UpdateStat(currentThirst, thirstDecayAmount, thirstDecayRate, (i) => { currentThirst = i; }));
+    }
+
+    private void Update()
+    {
+        steveAI.UpdateAI();
     }
 
     IEnumerator UpdateStat(float stat, float decay, float rate, Action<float> callback)

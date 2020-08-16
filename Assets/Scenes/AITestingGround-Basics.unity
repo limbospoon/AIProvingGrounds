@@ -338,6 +338,26 @@ MonoBehaviour:
   - {fileID: 13362195}
   targetDistance: 0.2
   moveSpeed: 0.05
+--- !u!114 &403395145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403395143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc051b11f1df22645b28e363a4771fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  steveStats:
+    health: 100
+    hunger: 100
+    thirst: 100
+  hungerDecayAmount: 0.05
+  thirstDecayAmount: 0.08
+  hungerDecayRate: 0.2
+  thirstDecayRate: 0.5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
