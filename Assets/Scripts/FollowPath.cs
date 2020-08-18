@@ -18,11 +18,53 @@ public class FollowPath : MonoBehaviour
     {
         wps = wpManager.GetComponent<WPManager>().waypoints;
         g = wpManager.GetComponent<WPManager>().graph;
-        currentNode = wps[7];
+        currentNode = wps[0];
     }
 
     public void GoToHeli()
     {
+        g.AStar(currentNode, wps[1]);
+        currentWP = 0;
+    }
 
+    public void GoToRuin()
+    {
+        g.AStar(currentNode, wps[7]);
+        currentWP = 0;
+    }
+
+    public void GoToOilRigs()
+    {
+        g.AStar(currentNode, wps[6]);
+        currentWP = 0;
+    }
+
+    private void LateUpdate()
+    {
+        if(g.getPathLength() == 0 || currentWP == g.getPathLength())
+        {
+            return;
+        }
+
+        currentNode = g.getPathPoint(currentWP);
+
+        if(Vector3.Distance(g.getPathPoint(currentWP).transform.position, transform.position) < accuracy)
+        {
+            currentWP++;
+        }
+
+        if(currentWP < g.getPathLength())
+        {
+            goal = g.getPathPoint(currentWP).transform;
+            Vector3 lookAtGoal = new Vector3(goal.position.x,
+                                             transform.position.y,
+                                             goal.position.z);
+            Vector3 direction = lookAtGoal - transform.position;
+
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                                                  Quaternion.LookRotation(direction),
+                                                  Time.deltaTime * rotSpeed);
+            transform.Translate(0, 0, speed * Time.deltaTime);
+        }
     }
 }
