@@ -6,8 +6,14 @@ public class SteveAI : MonoBehaviour
 {
     public Transform goal;
     public Transform[] patrolPoints;
+    public GameObject projectilePrefab;
+    public Transform projectileSpawn;
+    public GameObject turret;
+    public GameObject target;
     public float targetDistance;
     public float moveSpeed;
+    public float projectileSpeed;
+    public bool canShoot = true;
 
     private int currentWaypoint = 0;
 
@@ -60,6 +66,77 @@ public class SteveAI : MonoBehaviour
         //StartCoroutine(Wander());
     }
 
+    void ShootTarget()
+    {
+        Vector3 targetDir = (target.transform.position - transform.position).normalized;
+        Quaternion lookRoation = Quaternion.LookRotation(new Vector3(targetDir.x, 0, targetDir.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRoation, Time.deltaTime * 5.0f);
+
+        float? angle = RoateTurret();
+
+        if(angle != null && Vector3.Angle(targetDir, transform.forward) < 10.0f)
+        {
+            FireBullet();
+        }
+        Debug.Log(angle);
+    }
+
+    void CanShootAgain()
+    {
+        canShoot = true;
+    }
+
+    void FireBullet()
+    {
+        if(canShoot)
+        {
+            GameObject bullet = Instantiate(projectilePrefab, projectileSpawn.position, projectileSpawn.rotation);
+            bullet.GetComponent<Rigidbody>().velocity = projectileSpeed * turret.transform.forward;
+            canShoot = false;
+            Invoke("CanShootAgain", 0.5f);
+        }
+    }
+
+    float? RoateTurret()
+    {
+        float? angle = CalculateTargetAngle(true);
+
+        if(angle != null)
+        {
+            turret.transform.localEulerAngles = new Vector3(360.0f - (float)angle, 0f, 0f);
+        }
+        return angle;
+    }
+
+    float? CalculateTargetAngle(bool low)
+    {
+        Vector3 targetDir = target.transform.position - turret.transform.position;
+        float y = targetDir.y;
+        targetDir.y = 0f;
+        float x = targetDir.magnitude;
+        float gravity = 9.81f;
+        float speedSqr = moveSpeed * moveSpeed;
+        float underTheSqr = (speedSqr * speedSqr) - gravity * (gravity * x * x + 2 * y * speedSqr);
+
+        if (underTheSqr >= 0f)
+        {
+            float root = Mathf.Sqrt(underTheSqr);
+            float highAngle = speedSqr + root;
+            float lowAngle = speedSqr - root;
+
+            if (low)
+            {
+                return (Mathf.Atan2(lowAngle, gravity * x) * Mathf.Rad2Deg);
+            }
+            else
+            {
+                return (Mathf.Atan2(highAngle, gravity * x) * Mathf.Rad2Deg);
+            }
+        }
+        else
+            return null;
+    }
+
     void CalculateAngle()
     {
         Vector3 fwd = this.transform.forward;
@@ -99,7 +176,8 @@ public class SteveAI : MonoBehaviour
 
     public void UpdateAI()
     {
-        TravelToGoal();
+        //TravelToGoal();
         //Patrol();
+        ShootTarget();
     }
 }
